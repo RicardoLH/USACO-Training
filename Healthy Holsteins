@@ -1,0 +1,84 @@
+/*
+ID: t_a_k_e1
+PROG: holstein
+LANG: C++
+*/
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <sstream>
+#include <algorithm>
+#include <math.h>
+
+using namespace std;
+int v;
+int g;
+int vitaminas[27];
+int vitaminasTemp[27];
+int alimentos[17][27];
+int solucion[27];
+int main(){
+    ofstream fout ("holstein.out");
+    ifstream fin ("holstein.in");
+    fin>>v;
+    for( int i = 0; i < v; i++ ){
+        fin>>vitaminas[i];
+    }
+    fin>>g;
+    for( int i = 0; i < g; i++ ){
+        for( int j = 0; j < v; j++ ){
+            fin>>alimentos[i][j];
+        }
+    }
+    int combinaciones = pow(2,g) -1;
+    int solucion = 0;
+    int contMin = 16;
+    //cout<<"combinaciones" << combinaciones<<endl;
+    for( int i = 1; i <= combinaciones; i++ ){
+        //cout<<" comprobando " << i <<endl;
+        int temp = i;
+        int cont = 0;
+        int objetos = 0;
+        *vitaminasTemp = *vitaminas;
+        for( int j = 0; j < v; j++ ){
+            vitaminasTemp[j] = vitaminas[j];
+        }
+        bool correcto = true;
+        while( temp > 0 ){
+            if( temp % 2 != 0 ){
+                //cout<<"utilizando objeto" << cont <<endl;
+                for( int j = 0; j < v; j++){
+                    vitaminasTemp[j] -= alimentos[cont][j];
+                    //cout<<vitaminasTemp[j]<<" "<<endl;
+                }
+                objetos++;
+            }
+            cont++;
+            temp = temp >> 1;
+
+        }
+        for( int j = 0; j < v; j++ ){
+            if( vitaminasTemp[j] > 0 ){
+                //cout<<"alguno es mayor a 0"<<endl;
+                correcto = false;
+                break;
+            }
+        }
+        if( correcto && objetos < contMin){
+            solucion = i;
+            contMin = objetos;
+        }
+    }
+    fout<<contMin;
+    int cont = 0;
+    while( solucion > 0 ){
+        if( solucion %2 != 0 ){
+           fout<<" "<<cont + 1;
+        }
+        cont++;
+        solucion = solucion >> 1;
+    }
+    fout<<endl;
+
+}
